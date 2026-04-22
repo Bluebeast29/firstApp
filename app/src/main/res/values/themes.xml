@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.FirstApp" parent="Theme.Material3.DayNight.NoActionBar">
+
+    </style>
+
+    <style name="Theme.FirstApp" parent="Base.Theme.FirstApp">
+        <!-- Primary color -->
+        <item name="colorPrimary">#000000</item>
+
+        <!-- Background -->
+        <item name="android:colorBackground">#ffffff</item>
+    </style>
+
+    <style name="Theme.checkbox" parent="Base.Theme.FirstApp">
+        <!-- Primary color -->
+        <item name="colorPrimary">#ffffff</item>
+
+        <!-- Background -->
+        <item name="android:colorBackground">#ff0000</item>
+    </style>
+
+
+</resources>

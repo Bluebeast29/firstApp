@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="hintStyle">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="placeholderSize">
+        <item name="android:textSize">15sp</item>
+    </style>
+</resources>
