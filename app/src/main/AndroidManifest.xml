@@ -33,6 +33,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".StudentDashboardActivity" android:exported="false" />
+        <activity android:name=".FacultyDashboardActivity" android:exported="false" />
+        <activity android:name=".AdminDashboardActivity" android:exported="false" />
+        <activity android:name=".DepartmentListActivity" android:exported="false" />
+        <activity android:name=".DepartmentDetailActivity" android:exported="false" />
+        <activity android:name=".CourseListActivity" android:exported="false" />
+        <activity android:name=".CourseDetailActivity" android:exported="false" />
+        <activity android:name=".StudentListActivity" android:exported="false" />
+        <activity android:name=".StudentProfileActivity" android:exported="false" />
+        <activity android:name=".FacultyListActivity" android:exported="false" />
+        <activity android:name=".FacultyProfileActivity" android:exported="false" />
+        <activity android:name=".SessionsListActivity" android:exported="false" />
+        <activity android:name=".MarkAttendanceActivity" android:exported="false" />
+        <activity android:name=".MyAttendanceActivity" android:exported="false" />
+        <activity android:name=".MyProfileActivity" android:exported="false" />
     </application>
 
 </manifest>
