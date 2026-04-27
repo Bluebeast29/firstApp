@@ -1,85 +1,67 @@
 package com.example.firstapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.SpannableString;
-import android.text.TextWatcher;
+import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import androidx.activity.EdgeToEdge;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class forgot_password extends AppCompatActivity {
 
+    private TextInputLayout tilEmail;
+    private TextInputEditText etEmail;
+    private View btnContinue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_forgot_password);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        setContentView(R.layout.activity_forgot_password);
-        View root = findViewById(R.id.mainCard);
-        root.setOnClickListener(v -> {
-            // clear focus
-            View current = getCurrentFocus();
-            if (current != null) {
-                current.clearFocus();
-            }
 
-            // hide keyboard
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            if (imm != null && current != null) {
-                imm.hideSoftInputFromWindow(current.getWindowToken(), 0);
-            }
-        });
-
-        Button submit = findViewById(R.id.confirm_button);
-        submit.setOnClickListener(v -> {
-            Intent next = new Intent(forgot_password.this, email_otp.class);
-            startActivity(next);
-        });
-
-        int email = R.id.email;
-        hintText(email);
+        initViews();
+        setupClickListeners();
     }
 
-    private void hintText(int name) {
-        TextInputLayout textBox = findViewById(name);
-        EditText field = textBox.getEditText();
-        LinearLayout main = findViewById(R.id.mainCard);
+    private void initViews() {
+        tilEmail = findViewById(R.id.email);
+        etEmail = (TextInputEditText) tilEmail.getEditText();
+        btnContinue = findViewById(R.id.confirm_button);
+    }
 
-        field.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(s.toString().trim().isEmpty()) {
-                    textBox.setActivated(false);
-                } else{
-                    textBox.setActivated(true);
-                }
+    private void setupClickListeners() {
+        btnContinue.setOnClickListener(v -> {
+            hideKeyboard();
+            String email = etEmail.getText().toString().trim();
+            if (TextUtils.isEmpty(email) || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                tilEmail.setError("Enter a valid email address");
+                return;
             }
+            
+            tilEmail.setError(null);
+            btnContinue.setEnabled(false);
+            btnContinue.setAlpha(0.5f);
+            
+            Toast.makeText(this, "Verification code sent!", Toast.LENGTH_SHORT).show();
+            
+            new Handler().postDelayed(() -> {
+                startActivity(new Intent(this, email_otp.class));
+                finish();
+            }, 1000);
         });
+
+        findViewById(R.id.main).setOnClickListener(v -> hideKeyboard());
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

@@ -1,138 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FB">
+    android:background="@drawable/app_bg_gradient"
+    tools:context=".home">
 
-    <!-- 🔷 TOP BG -->
-    <ImageView
-        android:id="@+id/top_bg"
-        android:layout_width="0dp"
-        android:layout_height="220dp"
-        android:src="@drawable/blobs_bg"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- 🔷 SCROLL CONTENT -->
     <ScrollView
-        android:id="@+id/scroll"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_nav"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/bottom_nav_container"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="24dp">
 
-            <!-- PROFILE CARD -->
-            <LinearLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Good Morning,"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alice Smith"
+                android:textColor="@color/white"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:layout_marginTop="120dp"
-                android:background="@drawable/login_card"
-                android:elevation="8dp"
-                android:padding="16dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/ic_launcher_foreground"/>
+                android:layout_marginTop="32dp"
+                app:cardBackgroundColor="@color/glass_white"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/glass_border">
 
                 <LinearLayout
-                    android:layout_marginStart="10dp"
-                    android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="32dp">
 
                     <TextView
-                        android:text="Good Morning"
-                        android:textColor="#888"
-                        android:textSize="12sp"/>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="85%"
+                        android:textColor="@color/white"
+                        android:textSize="48sp"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:text="John Doe"
-                        android:textSize="18sp"
-                        android:textStyle="bold"/>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Overall Attendance"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp" />
+
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="Active Courses"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-            <!-- STATS -->
             <LinearLayout
+                android:id="@+id/courses_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:background="@drawable/login_card"
-                    android:padding="16dp">
-
-                    <TextView android:text="Courses"/>
-                    <TextView android:text="5" android:textSize="22sp"/>
-                </LinearLayout>
-
-                <View android:layout_width="10dp" android:layout_height="0dp"/>
-
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:background="@drawable/login_card"
-                    android:padding="16dp">
-
-                    <TextView android:text="Attendance"/>
-                    <TextView android:text="88%" android:textSize="22sp"/>
-                </LinearLayout>
-
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+                <!-- Courses added dynamically or static for demo -->
+                <include layout="@layout/item_course_glass" />
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
-    <!-- 🔷 BOTTOM NAV -->
-    <LinearLayout
-        android:id="@+id/bottom_nav"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:background="#FFFFFF"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottom_nav_container"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        app:cardBackgroundColor="@color/glass_white"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/glass_border"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="20dp"
-            android:src="@drawable/ic_launcher_foreground"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="20dp"
-            android:src="@drawable/ic_launcher_foreground"/>
+            <ImageView
+                android:id="@+id/nav_home"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_launcher_foreground"
+                app:tint="@color/white" />
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="20dp"
-            android:src="@drawable/ic_launcher_foreground"/>
+            <ImageView
+                android:id="@+id/nav_modules"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_launcher_foreground"
+                app:tint="@color/text_secondary" />
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/nav_attendance"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_launcher_foreground"
+                app:tint="@color/text_secondary" />
+
+            <ImageView
+                android:id="@+id/nav_profile"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_profile"
+                app:tint="@color/text_secondary" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

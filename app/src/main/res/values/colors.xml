@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Glassmorphism Primary Palette -->
+    <color name="glass_white">#33FFFFFF</color>
+    <color name="glass_border">#66FFFFFF</color>
+    <color name="glass_input_bg">#1AFFFFFF</color>
+
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#CCFFFFFF</color>
+    <color name="text_secondary_glass">#CCFFFFFF</color>
+    <color name="accent_white">#FFFFFF</color>
+
+    <!-- Status & Error Colors -->
+    <color name="error_red">#FF5252</color>
+    <color name="success_green">#4CAF50</color>
+    <color name="on_glass_primary">#1A237E</color>
+
+    <!-- Foundation Colors -->
+    <color name="primary">#2F6AE2</color>
+    <color name="background_vibrant">#2F6AE2</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="button">#2F6AE2</color>
-    <color name="eyeShowPassword">#666565</color>
+    <color name="button_tint">#FFFFFF</color>
 </resources>

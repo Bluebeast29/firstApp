@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">First app</string>
+    <string name="app_name">ERP Hub</string>
     <string name="title_activity_login">Login</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -14,4 +14,12 @@
     <string name="background_image">Background image</string>
     <string name="get_started">Get Started</string>
     <string name="change_id"><u>Change Email-id</u></string>
+    <string name="elearning">E-learning</string>
+    <string name="prof_jom">Prof. JOM</string>
+    <string name="classes">Classes</string>
+    <string name="students_count">35 Students</string>
+    <string name="pending_attendance">Pending Attendance</string>
+    <string name="todays_attendance">Today\'s Attendance</string>
+    <string name="daa">DAA</string>
+    <string name="dmpp">DMPP</string>
 </resources>

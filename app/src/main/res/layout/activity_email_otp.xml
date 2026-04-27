@@ -5,87 +5,74 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/app_bg_gradient"
     tools:context=".email_otp">
-    <ImageView
-        android:id="@+id/background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitStart"
-        android:src="@drawable/blobs_bg"/>
+
     <LinearLayout
         android:id="@+id/mainCard"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.8"
-        android:orientation="vertical"
-        android:background="@drawable/login_card"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:padding="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:background="@drawable/glass_card"
         android:gravity="center_horizontal"
-        android:theme="@style/Theme.FirstApp"
-        android:clickable="true"
-        android:focusable="true">
+        android:orientation="vertical"
+        android:padding="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textSize="30sp"
-            android:gravity="center"
-            android:textColor="@color/black"
+            android:layout_marginTop="16dp"
             android:fontFamily="@font/roboto_extrabold"
-            android:text="Verification Code"/>
+            android:gravity="center"
+            android:text="Verification Code"
+            android:textColor="@color/white"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/signupText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:layout_marginBottom="32dp"
             android:gravity="center"
-            android:layout_marginBottom="10dp"
-            android:text="Enter the code we've sent via email to xyz@abc.com"
-            android:textSize="14sp"/>
+            android:text="Enter the code sent to your email"
+            android:textColor="@color/text_secondary_glass"
+            android:textSize="14sp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_enroll"
+            style="@style/AppTextInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginVertical="10dp"
-
-            app:hintEnabled="false"
-            android:textColorHint="@color/hint_color"
-            android:textColor="@color/black"
-            app:boxStrokeColor="#000000">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:hint="OTP Code">
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@color/black"
-                android:hint="- - -   - - -"
-                android:textColorHint="#DC595858"
                 android:inputType="number"
-
-                android:singleLine="true"
-                android:maxLines="1"
-                android:imeOptions="actionDone"/>
+                android:letterSpacing="0.2"
+                android:maxLength="6"
+                android:textColor="@color/white"
+                android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/cotinue_button"
+            style="@style/AppButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Continue"
-            android:textColor="@color/white"
-            android:backgroundTint="#2F6AE2"/>
+            android:layout_height="56dp"
+            android:text="Continue" />
 
         <TextView
             android:id="@+id/chnage_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="20dp"
+            android:layout_marginTop="24dp"
             android:gravity="center"
-            android:textColor="@android:color/black"
-            android:text="@string/change_id"/>
+            android:text="Change Email-id"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

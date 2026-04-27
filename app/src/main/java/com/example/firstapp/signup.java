@@ -1,117 +1,113 @@
 package com.example.firstapp;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
+import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class signup extends AppCompatActivity {
 
+    private TextInputEditText etName, etEmail, etPass, etConfPass;
+    private TextInputLayout tilName, tilEmail, tilPass, tilConfPass;
+    private AutoCompleteTextView roleDropdown, deptDropdown;
+    private ProgressBar progressBar;
+    private View btnSignup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_signup);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setContentView(R.layout.activity_signup);
 
-        TextView textView = findViewById(R.id.loginText);
-
-        String text = "Already have an account? Log in";
-
-        SpannableString spannable = new SpannableString(text);
-
-        ClickableSpan clickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-                finish();
-            }
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                ds.setColor(Color.parseColor("#2F6AE2"));       // keep color
-                ds.setUnderlineText(false);    // remove underline
-            }
-        };
-
-        spannable.setSpan(clickableSpan, 25, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(spannable);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-
-        int enroll = R.id.enroll;
-        int pass = R.id.pass;
-        int email = R.id.email;
-        int confPass = R.id.confPass;
-        hintText(enroll);
-        hintText(pass);
-        hintText(email);
-        hintText(confPass);
-
-        View root = findViewById(R.id.mainCard);
-
-        root.setOnClickListener(v -> {
-            // clear focus
-            View current = getCurrentFocus();
-            if (current != null) {
-                current.clearFocus();
-            }
-
-            // hide keyboard
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            if (imm != null && current != null) {
-                imm.hideSoftInputFromWindow(current.getWindowToken(), 0);
-            }
-        });
-
-        Button signUp = findViewById(R.id.signUpButton);
-        signUp.setOnClickListener(v -> {
-            Intent signup = new Intent(signup.this, email_otp.class);
-            startActivity(signup);
-        });
+        initViews();
+        setupDropdowns();
+        setupClickListeners();
     }
 
-    private void hintText(int name) {
-        TextInputLayout textBox = findViewById(name);
-        EditText field = textBox.getEditText();
-        LinearLayout main = findViewById(R.id.mainCard);
+    private void initViews() {
+        tilName = findViewById(R.id.enroll); // ID mapping preserved from XML
+        tilEmail = findViewById(R.id.email);
+        tilPass = findViewById(R.id.pass);
+        tilConfPass = findViewById(R.id.confPass);
+        
+        etName = (TextInputEditText) tilName.getEditText();
+        etEmail = (TextInputEditText) tilEmail.getEditText();
+        etPass = (TextInputEditText) tilPass.getEditText();
+        etConfPass = (TextInputEditText) tilConfPass.getEditText();
+        
+        roleDropdown = findViewById(R.id.role_dropdown);
+        deptDropdown = findViewById(R.id.dept_dropdown);
+        
+        btnSignup = findViewById(R.id.signUpButton);
+        progressBar = new ProgressBar(this); // In layout?
+    }
 
-        field.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+    private void setupDropdowns() {
+        String[] roles = {"Student", "Teacher", "Admin"};
+        ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(this, R.layout.dropdown_item, roles);
+        roleDropdown.setAdapter(roleAdapter);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        String[] departments = {"Computer Science", "Information Technology", "Mechanical", "Civil", "Electronics"};
+        ArrayAdapter<String> deptAdapter = new ArrayAdapter<>(this, R.layout.dropdown_item, departments);
+        deptDropdown.setAdapter(deptAdapter);
+    }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                textBox.setActivated(!s.toString().trim().isEmpty());
-            }
-        });
+    private void setupClickListeners() {
+        btnSignup.setOnClickListener(v -> attemptSignup());
+        findViewById(R.id.loginText).setOnClickListener(v -> finish());
+        findViewById(R.id.main).setOnClickListener(v -> hideKeyboard());
+    }
+
+    private void attemptSignup() {
+        hideKeyboard();
+        String name = etName.getText().toString().trim();
+        String email = etEmail.getText().toString().trim();
+        String pass = etPass.getText().toString().trim();
+        String confPass = etConfPass.getText().toString().trim();
+
+        if (!validateInputs(name, email, pass, confPass)) return;
+
+        btnSignup.setEnabled(false);
+        btnSignup.setAlpha(0.5f);
+
+        new Handler().postDelayed(() -> {
+            startActivity(new Intent(this, email_otp.class));
+        }, 1000);
+    }
+
+    private boolean validateInputs(String name, String email, String pass, String confPass) {
+        boolean valid = true;
+        
+        if (TextUtils.isEmpty(name)) { tilName.setError("Name is required"); valid = false; }
+        else tilName.setError(null);
+
+        if (TextUtils.isEmpty(email) || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            tilEmail.setError("Valid email is required");
+            valid = false;
+        } else tilEmail.setError(null);
+
+        if (pass.length() < 6) { tilPass.setError("Minimum 6 characters"); valid = false; }
+        else tilPass.setError(null);
+
+        if (!pass.equals(confPass)) { tilConfPass.setError("Passwords do not match"); valid = false; }
+        else tilConfPass.setError(null);
+
+        return valid;
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }
