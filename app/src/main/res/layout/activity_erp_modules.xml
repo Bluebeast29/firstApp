@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_bg_gradient">
+
+    <TextView
+        android:id="@+id/tv_hub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="48dp"
+        android:text="ERP Modules"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_hub_title">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Academic"
+                android:textStyle="bold"
+                android:textColor="@color/text_secondary_glass"/>
+
+            <Button
+                android:id="@+id/btn_departments"
+                style="@style/AppButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:text="Departments List"
+                android:gravity="start|center_vertical"
+                app:icon="@drawable/ic_launcher_foreground"
+                android:alpha="0.9"/>
+
+            <Button
+                android:id="@+id/btn_courses"
+                style="@style/AppButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="12dp"
+                android:text="Courses Catalog"
+                android:gravity="start|center_vertical"
+                app:icon="@drawable/ic_launcher_foreground"
+                android:alpha="0.9"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Users Management"
+                android:layout_marginTop="24dp"
+                android:textStyle="bold"
+                android:textColor="@color/text_secondary_glass"/>
+
+            <Button
+                android:id="@+id/btn_students"
+                style="@style/AppButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:text="Students Directory"
+                android:gravity="start|center_vertical"
+                app:icon="@drawable/ic_launcher_foreground"
+                android:alpha="0.9"/>
+
+            <Button
+                android:id="@+id/btn_faculty"
+                style="@style/AppButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="12dp"
+                android:text="Faculty Directory"
+                android:gravity="start|center_vertical"
+                app:icon="@drawable/ic_launcher_foreground"
+                android:alpha="0.9"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Daily Operations"
+                android:layout_marginTop="24dp"
+                android:textStyle="bold"
+                android:textColor="@color/text_secondary_glass"/>
+
+            <Button
+                android:id="@+id/btn_schedule"
+                style="@style/AppButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:text="Class Schedule"
+                android:gravity="start|center_vertical"
+                app:icon="@drawable/ic_launcher_foreground"
+                android:alpha="0.9"/>
+
+            <Button
+                android:id="@+id/btn_mark_attendance"
+                style="@style/AppButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="12dp"
+                android:text="Mark Attendance (Faculty)"
+                android:gravity="start|center_vertical"
+                app:icon="@drawable/ic_launcher_foreground"
+                android:alpha="0.9"/>
+
+            <Button
+                android:id="@+id/btn_my_attendance"
+                style="@style/AppButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="12dp"
+                android:text="My Attendance (Student)"
+                android:gravity="start|center_vertical"
+                app:icon="@drawable/ic_launcher_foreground"
+                android:alpha="0.9"/>
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

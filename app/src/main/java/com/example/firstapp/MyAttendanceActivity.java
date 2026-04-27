@@ -1,33 +1,30 @@
 package com.example.firstapp;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MyAttendanceActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_attendance);
 
-        TextView overallAttendanceText = findViewById(R.id.overallAttendanceText);
-        ListView myAttendanceListView = findViewById(R.id.myAttendanceListView);
+        RecyclerView rvAttendance = findViewById(R.id.rv_attendance);
+        rvAttendance.setLayoutManager(new LinearLayoutManager(this));
 
-        overallAttendanceText.setText("Overall: 85%");
+        List<String> attendanceData = new ArrayList<>();
+        attendanceData.add("Data Analysis & Algorithms: 92%");
+        attendanceData.add("Discrete Mathematics: 88%");
+        attendanceData.add("Database Management: 85%");
+        attendanceData.add("Computer Networks: 78%");
+        attendanceData.add("Operating Systems: 90%");
+        attendanceData.add("Software Engineering: 82%");
 
-        List<String> attendanceRecords = new ArrayList<>();
-        attendanceRecords.add("CS101: 90% (18 / 20 classes)");
-        attendanceRecords.add("CS201: 80% (16 / 20 classes)");
-        attendanceRecords.add("Math201: 85% (17 / 20 classes)");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, attendanceRecords);
-        myAttendanceListView.setAdapter(adapter);
+        GenericAdapter adapter = new GenericAdapter(attendanceData);
+        rvAttendance.setAdapter(adapter);
     }
 }
