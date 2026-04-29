@@ -3,16 +3,27 @@ package com.example.firstapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.firstapp.api.ApiClient;
+import com.example.firstapp.api.ApiResponse;
+import com.example.firstapp.api.dto.AuthResponse;
+import com.example.firstapp.api.dto.RegisterRequest;
+import com.example.firstapp.api.service.AuthService;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class signup extends AppCompatActivity {
 
@@ -21,11 +32,14 @@ public class signup extends AppCompatActivity {
     private AutoCompleteTextView roleDropdown, deptDropdown;
     private ProgressBar progressBar;
     private View btnSignup;
+    private AuthService authService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        authService = ApiClient.getInstance(this).create(AuthService.class);
 
         initViews();
         setupDropdowns();
@@ -33,21 +47,21 @@ public class signup extends AppCompatActivity {
     }
 
     private void initViews() {
-        tilName = findViewById(R.id.enroll); // ID mapping preserved from XML
+        tilName = findViewById(R.id.input_name);
         tilEmail = findViewById(R.id.email);
         tilPass = findViewById(R.id.pass);
         tilConfPass = findViewById(R.id.confPass);
-        
+
         etName = (TextInputEditText) tilName.getEditText();
         etEmail = (TextInputEditText) tilEmail.getEditText();
         etPass = (TextInputEditText) tilPass.getEditText();
         etConfPass = (TextInputEditText) tilConfPass.getEditText();
-        
+
         roleDropdown = findViewById(R.id.role_dropdown);
         deptDropdown = findViewById(R.id.dept_dropdown);
-        
+
         btnSignup = findViewById(R.id.signUpButton);
-        progressBar = new ProgressBar(this); // In layout?
+        progressBar = new ProgressBar(this);
     }
 
     private void setupDropdowns() {
@@ -78,14 +92,52 @@ public class signup extends AppCompatActivity {
         btnSignup.setEnabled(false);
         btnSignup.setAlpha(0.5f);
 
-        new Handler().postDelayed(() -> {
-            startActivity(new Intent(this, email_otp.class));
-        }, 1000);
+        String role = mapRole(roleDropdown.getText().toString());
+        RegisterRequest request = new RegisterRequest(name, email, pass, role, null);
+
+        authService.register(request).enqueue(new Callback<ApiResponse<AuthResponse.UserData>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<AuthResponse.UserData>> call,
+                                   Response<ApiResponse<AuthResponse.UserData>> response) {
+                btnSignup.setEnabled(true);
+                btnSignup.setAlpha(1.0f);
+
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    Toast.makeText(signup.this, "Registration successful! Please login.", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(signup.this, login.class));
+                    finish();
+                } else {
+                    String error = "Registration failed";
+                    if (response.body() != null && response.body().getError() != null) {
+                        error = response.body().getError();
+                    } else if (response.code() == 409) {
+                        error = "Email already registered";
+                    }
+                    Toast.makeText(signup.this, error, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<AuthResponse.UserData>> call, Throwable t) {
+                btnSignup.setEnabled(true);
+                btnSignup.setAlpha(1.0f);
+                Toast.makeText(signup.this, "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private String mapRole(String displayRole) {
+        if (displayRole == null) return "student";
+        switch (displayRole) {
+            case "Teacher": return "faculty";
+            case "Admin": return "admin";
+            default: return "student";
+        }
     }
 
     private boolean validateInputs(String name, String email, String pass, String confPass) {
         boolean valid = true;
-        
+
         if (TextUtils.isEmpty(name)) { tilName.setError("Name is required"); valid = false; }
         else tilName.setError(null);
 
@@ -94,7 +146,7 @@ public class signup extends AppCompatActivity {
             valid = false;
         } else tilEmail.setError(null);
 
-        if (pass.length() < 6) { tilPass.setError("Minimum 6 characters"); valid = false; }
+        if (pass.length() < 8) { tilPass.setError("Minimum 8 characters"); valid = false; }
         else tilPass.setError(null);
 
         if (!pass.equals(confPass)) { tilConfPass.setError("Passwords do not match"); valid = false; }

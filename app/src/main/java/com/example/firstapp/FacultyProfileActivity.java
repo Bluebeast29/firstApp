@@ -4,10 +4,22 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.firstapp.models.Faculty;
+import com.example.firstapp.api.ApiClient;
+import com.example.firstapp.api.ApiResponse;
+import com.example.firstapp.api.dto.FacultyDto;
+import com.example.firstapp.api.dto.OfferingDto;
+import com.example.firstapp.api.service.DataService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FacultyProfileActivity extends AppCompatActivity {
 
@@ -16,21 +28,71 @@ public class FacultyProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_faculty_profile);
 
-        // Assume showing the first faculty
-        Faculty faculty = MockData.getFaculty().get(0);
+        String facultyId = getIntent().getStringExtra("FACULTY_ID");
+        if (facultyId == null) {
+            ((TextView) findViewById(R.id.facultyNameText)).setText("Faculty ID missing");
+            return;
+        }
 
-        TextView facultyNameText = findViewById(R.id.facultyNameText);
-        TextView facultyEmailText = findViewById(R.id.facultyEmailText);
-        TextView facultyInfoText = findViewById(R.id.facultyInfoText);
-        TextView facultySpecializationText = findViewById(R.id.facultySpecializationText);
-        ListView teachingLoadListView = findViewById(R.id.teachingLoadListView);
+        DataService dataService = ApiClient.getInstance(this).create(DataService.class);
+        dataService.getFacultyById(facultyId).enqueue(new Callback<ApiResponse<FacultyDto>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<FacultyDto>> call,
+                                   Response<ApiResponse<FacultyDto>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    FacultyDto faculty = response.body().getData();
+                    if (faculty != null) {
+                        displayFaculty(faculty);
+                        loadTeachingLoad(dataService, facultyId);
+                    }
+                } else {
+                    String error = "Faculty not found";
+                    if (response.code() == 401) error = "Session expired";
+                    Toast.makeText(FacultyProfileActivity.this, error, Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        facultyNameText.setText(faculty.name);
-        facultyEmailText.setText(faculty.email);
-        facultyInfoText.setText("Dept: " + faculty.department + " | Designation: " + faculty.designation);
-        facultySpecializationText.setText(faculty.specialization);
+            @Override
+            public void onFailure(Call<ApiResponse<FacultyDto>> call, Throwable t) {
+                Toast.makeText(FacultyProfileActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, faculty.teachingLoad);
-        teachingLoadListView.setAdapter(adapter);
+    private void displayFaculty(FacultyDto faculty) {
+        String name = faculty.getName() != null ? faculty.getName() : "Faculty";
+        String email = faculty.getEmail() != null ? faculty.getEmail() : "";
+        String designation = faculty.getDesignation() != null ? faculty.getDesignation() : "";
+
+        ((TextView) findViewById(R.id.facultyNameText)).setText(name);
+        ((TextView) findViewById(R.id.facultyEmailText)).setText(email);
+        ((TextView) findViewById(R.id.facultyInfoText)).setText("Designation: " + designation);
+        ((TextView) findViewById(R.id.facultySpecializationText)).setText(faculty.getSpecialization());
+    }
+
+    private void loadTeachingLoad(DataService dataService, String facultyId) {
+        dataService.getFacultyOfferings(facultyId).enqueue(new Callback<ApiResponse<List<OfferingDto>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<OfferingDto>>> call,
+                                   Response<ApiResponse<List<OfferingDto>>> response) {
+                List<String> loadStrings = new ArrayList<>();
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<OfferingDto> offerings = response.body().getData();
+                    if (offerings != null) {
+                        for (OfferingDto o : offerings) {
+                            String cName = o.getCourseName() != null ? o.getCourseName() : "Course";
+                            String sec = o.getSection() != null ? " (" + o.getSection() + ")" : "";
+                            loadStrings.add(cName + sec);
+                        }
+                    }
+                }
+                if (loadStrings.isEmpty()) loadStrings.add("No teaching assignments");
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(FacultyProfileActivity.this, android.R.layout.simple_list_item_1, loadStrings);
+                ((ListView) findViewById(R.id.teachingLoadListView)).setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<OfferingDto>>> call, Throwable t) {}
+        });
     }
 }

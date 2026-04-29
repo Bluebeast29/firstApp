@@ -7,7 +7,18 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.firstapp.models.Course;
+import com.example.firstapp.api.ApiClient;
+import com.example.firstapp.api.ApiResponse;
+import com.example.firstapp.api.dto.CourseDto;
+import com.example.firstapp.api.dto.OfferingDto;
+import com.example.firstapp.api.service.DataService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CourseDetailActivity extends AppCompatActivity {
 
@@ -16,23 +27,65 @@ public class CourseDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_detail);
 
-        // Assume showing the first course
-        Course course = MockData.getCourses().get(0);
+        String courseId = getIntent().getStringExtra("COURSE_ID");
+        if (courseId == null) {
+            ((TextView) findViewById(R.id.courseNameText)).setText("Course not found");
+            return;
+        }
 
-        TextView courseNameText = findViewById(R.id.courseNameText);
-        TextView courseInfoText = findViewById(R.id.courseInfoText);
-        TextView courseDescriptionText = findViewById(R.id.courseDescriptionText);
-        ListView prerequisitesListView = findViewById(R.id.prerequisitesListView);
-        ListView offeringsListView = findViewById(R.id.offeringsListView);
+        DataService dataService = ApiClient.getInstance(this).create(DataService.class);
 
-        courseNameText.setText(course.name + " (" + course.code + ")");
-        courseInfoText.setText("Credits: " + course.credits + " | Level: " + course.level);
-        courseDescriptionText.setText(course.description);
+        // Fetch course details
+        dataService.getCourse(courseId).enqueue(new Callback<ApiResponse<CourseDto>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<CourseDto>> call,
+                                   Response<ApiResponse<CourseDto>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    CourseDto course = response.body().getData();
+                    if (course != null) {
+                        ((TextView) findViewById(R.id.courseNameText)).setText(course.getName() + " (" + course.getCode() + ")");
+                        ((TextView) findViewById(R.id.courseInfoText)).setText("Credits: " + course.getCredits() + " | Level: " + course.getLevel() + (course.isElective() ? " | Elective" : ""));
+                        ((TextView) findViewById(R.id.courseDescriptionText)).setText(course.getDescription());
 
-        ArrayAdapter<String> prereqAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, course.prerequisites);
-        prerequisitesListView.setAdapter(prereqAdapter);
+                        // Prerequisites
+                        List<String> prereqs = course.getPrerequisites();
+                        if (prereqs == null || prereqs.isEmpty()) {
+                            prereqs = new ArrayList<>();
+                            prereqs.add("None");
+                        }
+                        ArrayAdapter<String> prereqAdapter = new ArrayAdapter<>(CourseDetailActivity.this, android.R.layout.simple_list_item_1, prereqs);
+                        ((ListView) findViewById(R.id.prerequisitesListView)).setAdapter(prereqAdapter);
+                    }
+                }
+            }
 
-        ArrayAdapter<String> offeringsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, course.currentOfferings);
-        offeringsListView.setAdapter(offeringsAdapter);
+            @Override
+            public void onFailure(Call<ApiResponse<CourseDto>> call, Throwable t) {}
+        });
+
+        // Fetch offerings for this course
+        dataService.getCourseOfferings(courseId).enqueue(new Callback<ApiResponse<List<OfferingDto>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<OfferingDto>>> call,
+                                   Response<ApiResponse<List<OfferingDto>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<OfferingDto> offerings = response.body().getData();
+                    List<String> offeringStrings = new ArrayList<>();
+                    if (offerings != null) {
+                        for (OfferingDto o : offerings) {
+                            String facultyName = o.getFacultyName() != null ? o.getFacultyName() : "TBA";
+                            String section = o.getSection() != null ? o.getSection() : "";
+                            offeringStrings.add("Section: " + section + " | Faculty: " + facultyName);
+                        }
+                    }
+                    if (offeringStrings.isEmpty()) offeringStrings.add("No current offerings");
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(CourseDetailActivity.this, android.R.layout.simple_list_item_1, offeringStrings);
+                    ((ListView) findViewById(R.id.offeringsListView)).setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<OfferingDto>>> call, Throwable t) {}
+        });
     }
 }

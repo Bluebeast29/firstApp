@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/app_bg_gradient"
+    android:fitsSystemWindows="true"
     tools:context=".home">
 
     <ScrollView
@@ -30,6 +31,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Alice Smith"
@@ -55,9 +57,10 @@
                     android:padding="32dp">
 
                     <TextView
+                        android:id="@+id/tv_attendance_percent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="85%"
+                        android:text="A"
                         android:textColor="@color/white"
                         android:textSize="48sp"
                         android:textStyle="bold" />
@@ -116,7 +119,7 @@
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/ic_home"
                 app:tint="@color/white" />
 
             <ImageView
@@ -124,7 +127,7 @@
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/ic_modules"
                 app:tint="@color/text_secondary" />
 
             <ImageView
@@ -132,7 +135,7 @@
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/ic_attendance"
                 app:tint="@color/text_secondary" />
 
             <ImageView
